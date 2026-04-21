@@ -12,7 +12,7 @@ const mockOwnerData: Owner = {
 };
 
 vi.mock('@shared/api', () => ({
-  ownerApiClient: {
+  apiClient: {
     getProfile: vi.fn().mockResolvedValue({
       status: 200,
       data: {
@@ -72,8 +72,8 @@ describe('entities/owner/model', () => {
     });
 
     it('должен выбрасывать ошибку если API вернул статус >= 400', async () => {
-      const { ownerApiClient } = await import('@shared/api');
-      vi.mocked(ownerApiClient.getProfile).mockResolvedValueOnce({ status: 500, data: null } as never);
+      const { apiClient } = await import('@shared/api');
+      vi.mocked(apiClient.getProfile).mockResolvedValueOnce({ status: 500, data: null } as never);
 
       await expect(fetchOwner()).rejects.toThrow('Failed to fetch owner');
     });

@@ -1,7 +1,7 @@
 import { action, atom, wrap } from '@reatom/core';
 // @ts-ignore - reatomForm доступен в runtime, но не объявлен в типах
 import { reatomForm } from '@reatom/core';
-import { eventTypesApiClient } from '@shared/api';
+import { apiClient } from '@shared/api';
 import type { EventType } from '@entities/event-type';
 
 // ============================================
@@ -28,7 +28,7 @@ export const editEventTypeForm = reatomForm(
       if (!et) throw new Error('Не выбран тип события для редактирования');
 
       const response = await wrap(
-        eventTypesApiClient.updateEventType(et.id, {
+        apiClient.updateEventType(et.id, {
           name: values.name,
           description: values.description || undefined,
           durationMinutes: Number(values.durationMinutes),

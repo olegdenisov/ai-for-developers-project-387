@@ -218,10 +218,7 @@ layoutRoute ("")
 **Note:** `pages/event-type/` splits routing into two files: `model/route.tsx` contains shared atoms (selectedEventTypeIdAtom, selectedSlotAtom, slotsAtom, fetch actions), and `model/eventTypeRoute.tsx` contains the `reatomRoute` definition. This split avoids a circular dependency with `booking-confirmation/model/route.tsx` which imports the atoms directly.
 
 **Shared API clients** (`shared/api/client.ts`):
-- `apiClient` (PublicApi) — public endpoints (event types, bookings)
-- `ownerApiClient` (OwnerApi) — owner profile
-- `eventTypesApiClient` (EventTypesApi) — admin event type CRUD
-- `slotsApiClient` (SlotsApi) — slot lookup by ID
+- `apiClient` — единый клиент для всех эндпоинтов
 
 ### Path Aliases (vite.config.ts + tsconfig.json)
 - `@/` → `src/`
