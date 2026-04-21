@@ -12,7 +12,7 @@ import {
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { computed, withAsyncData, wrap } from '@reatom/core';
 import { reatomComponent } from '@reatom/react';
-import { eventTypesApiClient } from '@shared/api';
+import { apiClient } from '@shared/api';
 import type { EventType } from '@entities/event-type';
 import { CreateEventTypeModal, isCreateEventTypeModalOpen } from '@features/create-event-type';
 import { EditEventTypeModal, openEditEventType } from '@features/edit-event-type';
@@ -27,7 +27,7 @@ import { DeleteEventTypeModal, openDeleteEventType } from '@features/delete-even
  * Вызов .retry() обновляет список с сервера.
  */
 const adminEventTypes = computed(async () => {
-  const response = await wrap(eventTypesApiClient.listEventTypes());
+  const response = await wrap(apiClient.listEventTypes());
   return response.data as EventType[];
 }, 'adminEventTypes').extend(withAsyncData({ initState: [] as EventType[] }));
 
