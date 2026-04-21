@@ -1,7 +1,7 @@
 import { atom, wrap } from '@reatom/core';
 // @ts-ignore - reatomForm доступен в runtime, но не объявлен в типах
 import { reatomForm } from '@reatom/core';
-import { eventTypesApiClient } from '@shared/api';
+import { apiClient } from '@shared/api';
 
 // ============================================
 // СОСТОЯНИЕ МОДАЛКИ СОЗДАНИЯ ТИПА СОБЫТИЯ
@@ -28,7 +28,7 @@ export const createEventTypeForm = reatomForm(
     name: 'createEventTypeForm',
     onSubmit: async (values: { name: string; description: string; durationMinutes: number }) => {
       const response = await wrap(
-        eventTypesApiClient.createEventType({
+        apiClient.createEventType({
           name: values.name,
           description: values.description || undefined,
           durationMinutes: Number(values.durationMinutes),

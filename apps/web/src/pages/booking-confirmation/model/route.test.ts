@@ -7,8 +7,6 @@ import type { Slot } from '@entities/slot'
 vi.mock('@shared/api', () => ({
   apiClient: {
     createBooking: vi.fn(),
-  },
-  slotsApiClient: {
     getSlot: vi.fn(),
   },
 }))

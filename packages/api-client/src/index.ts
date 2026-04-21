@@ -164,6 +164,156 @@ export class PublicApi extends BaseApiClient {
     );
     return { data: response.data, status: response.status };
   }
+
+  // ============================================
+  // МЕТОДЫ ИЗ OWNER API
+  // ============================================
+
+  /**
+   * Получить профиль владельца
+   */
+  async getProfile(): Promise<ApiResponse<components['schemas']['Owner']>> {
+    const response = await this.fetch<components['schemas']['Owner']>(
+      '/owner/profile'
+    );
+    return { data: response.data, status: response.status };
+  }
+
+  /**
+   * Получить список предстоящих бронирований
+   */
+  async getUpcomingBookings(params?: {
+    status?: components['schemas']['BookingStatus'];
+    startDate?: string;
+    endDate?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<ApiResponse<components['schemas']['Booking'][]>> {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.startDate) queryParams.set('startDate', params.startDate);
+    if (params?.endDate) queryParams.set('endDate', params.endDate);
+    if (params?.page) queryParams.set('page', String(params.page));
+    if (params?.pageSize) queryParams.set('pageSize', String(params.pageSize));
+
+    const query = queryParams.toString();
+    const response = await this.fetch<components['schemas']['Booking'][]>(
+      `/owner/bookings${query ? `?${query}` : ''}`
+    );
+
+    const totalCount = response.headers.get('X-Total-Count');
+    return {
+      data: response.data,
+      status: response.status,
+      headers: totalCount ? { 'X-Total-Count': totalCount } : undefined,
+    };
+  }
+
+  // ============================================
+  // МЕТОДЫ ИЗ EVENT TYPES API
+  // ============================================
+
+  /**
+   * Получить список всех типов событий
+   */
+  async listEventTypes(): Promise<
+    ApiResponse<components['schemas']['EventType'][]>
+  > {
+    const response = await this.fetch<components['schemas']['EventType'][]>(
+      '/event-types'
+    );
+    return { data: response.data, status: response.status };
+  }
+
+  /**
+   * Получить тип события по ID
+   */
+  async getEventType(id: string): Promise<
+    ApiResponse<components['schemas']['EventType']>
+  > {
+    const response = await this.fetch<components['schemas']['EventType']>(
+      `/event-types/${id}`
+    );
+    return { data: response.data, status: response.status };
+  }
+
+  /**
+   * Создать новый тип события
+   */
+  async createEventType(
+    data: components['schemas']['CreateEventTypeRequest']
+  ): Promise<ApiResponse<components['schemas']['EventType']>> {
+    const response = await this.fetch<components['schemas']['EventType']>(
+      '/event-types',
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+    return { data: response.data, status: response.status };
+  }
+
+  /**
+   * Обновить тип события
+   */
+  async updateEventType(
+    id: string,
+    data: components['schemas']['UpdateEventTypeRequest']
+  ): Promise<ApiResponse<components['schemas']['EventType']>> {
+    const response = await this.fetch<components['schemas']['EventType']>(
+      `/event-types/${id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }
+    );
+    return { data: response.data, status: response.status };
+  }
+
+  /**
+   * Удалить тип события
+   */
+  async deleteEventType(id: string): Promise<ApiResponse<void>> {
+    const response = await this.fetch<void>(`/event-types/${id}`, {
+      method: 'DELETE',
+    });
+    return { data: undefined, status: response.status };
+  }
+
+  // ============================================
+  // МЕТОДЫ ИЗ SLOTS API
+  // ============================================
+
+  /**
+   * Получить доступные слоты
+   */
+  async listAvailableSlots(params?: {
+    eventTypeId?: string;
+    startDate: string;
+    endDate: string;
+  }): Promise<ApiResponse<components['schemas']['Slot'][]>> {
+    const queryParams = new URLSearchParams();
+    if (params?.eventTypeId) queryParams.set('eventTypeId', params.eventTypeId);
+    queryParams.set('startDate', params!.startDate);
+    queryParams.set('endDate', params!.endDate);
+
+    const response = await this.fetch<components['schemas']['Slot'][]>(
+      `/slots?${queryParams}`
+    );
+    return { data: response.data, status: response.status };
+  }
+
+  /**
+   * Получить слот по ID
+   */
+  async getSlot(id: string): Promise<
+    ApiResponse<components['schemas']['Slot']>
+  > {
+    const response = await this.fetch<components['schemas']['Slot']>(
+      `/slots/${id}`
+    );
+    return { data: response.data, status: response.status };
+  }
 }
 
 /**

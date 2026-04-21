@@ -1,5 +1,5 @@
 import { action, atom, computed, withAsync, withAsyncData, wrap } from '@reatom/core';
-import { apiClient, ownerApiClient } from '@shared/api';
+import { apiClient } from '@shared/api';
 import type { Booking } from '@entities/booking';
 
 // ============================================
@@ -34,7 +34,7 @@ const emptyBookings: Booking[] = []
  */
 export const upcomingBookings = computed(async (): Promise<Booking[]> => {
   const response = await wrap(
-    ownerApiClient.getUpcomingBookings({ startDate: todayISO() }),
+    apiClient.getUpcomingBookings({ startDate: todayISO() }),
   );
   return response.data;
 }, 'bookings.upcoming').extend(withAsyncData({ initState: emptyBookings }));
@@ -45,7 +45,7 @@ export const upcomingBookings = computed(async (): Promise<Booking[]> => {
  */
 export const pastBookings = computed(async (): Promise<Booking[]> => {
   const response = await wrap(
-    ownerApiClient.getUpcomingBookings({ endDate: yesterdayISO() }),
+    apiClient.getUpcomingBookings({ endDate: yesterdayISO() }),
   );
   return response.data;
 }, 'bookings.past').extend(withAsyncData({ initState: emptyBookings }));

@@ -1,5 +1,5 @@
 import { action, atom, withAsync, wrap } from '@reatom/core';
-import { eventTypesApiClient } from '@shared/api';
+import { apiClient } from '@shared/api';
 import type { EventType } from '@entities/event-type';
 
 // ============================================
@@ -34,7 +34,7 @@ export const confirmDeleteEventType = action(async (onSuccess: () => void) => {
   const et = deletingEventType();
   if (!et) return;
 
-  const response = await wrap(eventTypesApiClient.deleteEventType(et.id));
+  const response = await wrap(apiClient.deleteEventType(et.id));
   if (response.status >= 400) {
     throw new Error('Не удалось удалить тип события');
   }
