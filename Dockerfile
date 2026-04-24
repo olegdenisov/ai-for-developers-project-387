@@ -27,6 +27,9 @@ COPY . .
 # Генерируем Prisma Client
 RUN pnpm --filter @calendar-booking/api run db:generate
 
+# Генерируем OpenAPI spec и TypeScript-типы (артефакты в .gitignore, нужны для сборки)
+RUN pnpm generate:openapi && pnpm generate:types
+
 # Собираем фронтенд (VITE_API_URL=/ — относительные запросы к тому же origin)
 RUN VITE_API_URL=/ pnpm --filter @calendar-booking/web build
 
