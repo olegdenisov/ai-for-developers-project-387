@@ -1,0 +1,67 @@
+name: Lighthouse Audit
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # 02:00 MSK (UTC+3)
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.15.x
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=.github/lighthouse/lighthouserc.json
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports-${{ github.run_id }}
+          path: .lighthouseci/
+          retention-days: 30
+
+      - name: Analyze and create issue
+        if: always()
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          model: opencode/minimax-m2.5-free
+          use_github_token: true
+          prompt: |
+            Найди JSON-файлы в директории .lighthouseci/ (файлы заканчиваются на .report.json).
+            Проанализируй результаты и создай GitHub Issue со следующим содержимым.
+
+            Заголовок: "Lighthouse Audit — <текущая дата в формате YYYY-MM-DD>"
+
+            ## Результаты аудита
+            Таблица скоров (умножь значения 0–1 на 100 для отображения в процентах):
+            | Категория | Балл |
+            |-----------|------|
+            | Performance | ... |
+            | Accessibility | ... |
+            | Best Practices | ... |
+            | SEO | ... |
+
+            ## Критичные проблемы (< 50)
+            Опиши каждую с рекомендацией по устранению.
+
+            ## Важные улучшения (50–89)
+            Опиши каждую с рекомендацией.
+
+            ## Полный отчёт
+            Ссылки на отчёты опубликованы в логах шага "Run Lighthouse CI" выше.
+            Артефакт с JSON-файлами: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
