@@ -32,6 +32,12 @@ jobs:
           path: .lighthouseci/
           retention-days: 30
 
+      - name: Configure Git identity
+        if: always()
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
       - name: Analyze and create issue
         if: always()
         uses: anomalyco/opencode/github@latest
