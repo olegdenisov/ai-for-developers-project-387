@@ -138,7 +138,7 @@ await prisma.$transaction(async (tx) => {
 ```
 app/        # Providers (Mantine, Reatom), router, global styles
 pages/      # home/, booking/, book-catalog/, event-type/, booking-confirmation/, booking-detail/, admin/
-features/   # create-booking/, view-slots/, cancel-booking/, reschedule-booking/, create-event-type/, edit-event-type/, delete-event-type/, owner-bookings/
+features/   # create-booking/, cancel-booking/, reschedule-booking/, create-event-type/, edit-event-type/, delete-event-type/, owner-bookings/
 entities/   # event-type/, slot/, booking/, owner/ — Reatom atoms
 shared/     # api/, config/, lib/, ui/, router/
 ```
